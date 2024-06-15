@@ -1,0 +1,97 @@
+/*Estilos generales*/
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	font-size: 62.5%;
+}
+
+body {
+	font-size: 1.6rem;
+}
+
+li {
+	list-style: none;
+}
+
+h1, h2{
+	margin: 2rem 0;
+}
+
+h1 {
+	font-size: 4rem;	
+}
+
+h2 {
+	font-size: 3.5rem;
+}
+
+/*Ajustar a mobiles*/
+@media (max-width: 456px) {
+	h1 {
+		font-size: 3rem;
+	}
+
+	h2 {
+	    font-size: 2.5rem;
+    }
+}
+
+img {
+	width: 100%;
+}
+
+a {
+	text-decoration: none;
+	color: #000;	
+}
+
+/*********************************
+    Estilos Generales
+**********************************/
+.flex {
+	display: flex;	
+}
+
+.grid {
+	display: grid;
+}
+
+.btn {
+	border: none;
+	padding: 2rem;
+	cursor: pointer;	
+	border-radius: .5rem;
+}
+
+.btn:not(:first-of-type) {
+    margin-left: 2rem;     
+}
+
+.centrar {
+	justify-content: center;
+	align-items: center;
+}
+
+.centrar-y {
+	align-items: center;
+}
+
+.centrar-x {
+	justify-content: center;
+}
+
+.centrar-margin {
+	margin: 0 auto;
+}
+
+.margin-bajo {
+	margin-bottom: 2rem;
+}
+
+.margin-arriba {
+	margin-top: 2rem;
+}
