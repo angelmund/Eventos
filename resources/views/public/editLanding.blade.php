@@ -92,9 +92,7 @@
 		}
 	</style>
 	
-	
-
-	@vite(['resources/js/app.js'])
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
 	<!-- Estilos leading -->
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
@@ -129,12 +127,12 @@
 
 		<ul class="header__redes flex">
 			<li class="redes__item">
-				<a class="redes__link whatsapp">
+				<a href="{{$landingPageData['url_whatsapp']}}" class="redes__link whatsapp">
 					<i class="fab fa-whatsapp"></i>
 				</a>
 			</li>
 			<li class="redes__item">
-				<a class="redes__link facebook">
+				<a href="{{$landingPageData['url_facebook']}}" class="redes__link facebook">
 					<i class="fab fa-facebook"></i>
 				</a>
 			</li>

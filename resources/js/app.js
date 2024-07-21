@@ -6,7 +6,7 @@ import './scriptEditorLading';
 import './scriptEditorLadingVisdualizarEstilos';
 import './EventoE';
 import './alertas';
-// import './editarLanding';
+import './editarLanding';
 
 
 import Alpine from 'alpinejs';

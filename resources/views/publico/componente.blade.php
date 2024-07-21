@@ -16,7 +16,7 @@
 
     <!-- CSS de Swiper -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    @vite(['resources/js/app.js'])
+
 </head>
 
 <body>

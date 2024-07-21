@@ -1,51 +1,40 @@
 import { verificarVacios, ventanaMostrarMensaje, obtenerValoresFormulario, ventanaFormulario } from "./funcionesVentana";
 
-/*Los addEvenListeners va aqui (Los Eschucas)*/
+document.addEventListener('DOMContentLoaded', () => {
+    // Event listeners
+    document.getElementById('abrir_editor').addEventListener('click', function () {
+        var formulario = document.querySelector('.contenedor__editor');
+        formulario.classList.add('mostrar'); // Agrega la clase 'mostrar' para mostrar el formulario
+    });
 
-/*Al preisonal el boton de registro abre el formulario*/
-/* Al presionar el botón de registro, abre el formulario */
-document.getElementById('btn_abrirFormulario').addEventListener('click', function () {
-    var formulario = document.querySelector('.formulario');
-    formulario.classList.add('mostrar'); // Agrega la clase 'mostrar' para mostrar el formulario
-});
+    document.getElementById('cerrar_editor').addEventListener('click', function (event) {
+        event.preventDefault();
+        var formulario = document.querySelector('.contenedor__editor');
+        formulario.classList.remove('mostrar'); // Quita la clase 'mostrar' para ocultar el formulario
+    });
 
-document.getElementById('btn_cerrarFormulario').addEventListener('click', function (event) {
-    event.preventDefault(); // Evita que el formulario se envíe (si estás dentro de un formulario)
-    var formulario = document.querySelector('.formulario');
-    formulario.classList.remove('mostrar'); // Quita la clase 'mostrar' para ocultar el formulario
-});
+    document.getElementById('formulario').addEventListener('submit', function (event) {
+        event.preventDefault();
 
-// Agrega un evento de envío al formulario 
-document.getElementById('form_registro').addEventListener('submit', function (event) {
-    // Detén el comportamiento predeterminado de envío del formulario
-    event.preventDefault();
+        const formData = new FormData(this);
+        const valores = obtenerValoresFormulario(formData);
 
-    // Recolecta los datos del formulario
-    const formData = new FormData(this);
-    //Obtenemos los datos
-    const valores = obtenerValoresFormulario(formData);
+        if (!verificarVacios(...valores)) {
+            ventanaMostrarMensaje('error', "Por favor, completa todos los campos del formulario.");
+            return;
+        }
 
-    //Si algun valor esta vacio
-    if (!verificarVacios(...valores)) {
-        ventanaMostrarMensaje(
-            'error',
-            "Por favor, completa todos los campos del formulario."
-        );
-        return;
-    } else
-        console.log('');
+        const url = document.getElementById('url').value;
 
-    const url = $('#url').val();
-    // Envía los datos al backend
-    fetch(url + '/evento/inscripcion', {
-        method: 'POST',
-        mode: 'cors',
-        redirect: 'manual',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        body: formData
-    })
+        fetch(url + '/evento/inscripcion', {
+            method: 'POST',
+            mode: 'cors',
+            redirect: 'manual',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al enviar los datos al servidor.');
@@ -55,98 +44,78 @@ document.getElementById('form_registro').addEventListener('submit', function (ev
         .then(data => {
             if (data) {
                 this.reset();
-                //Cierra el formulario (lo oculta)
                 ventanaFormulario('formulario');
-
-                ventanaMostrarMensaje(
-                    'exito',
-                    "¡Registro exitoso! Por favor, verifica tu correo electrónico para continuar.");
+                ventanaMostrarMensaje('exito', "¡Registro exitoso! Por favor, verifica tu correo electrónico para continuar.");
             } else {
-                ventanaMostrarMensaje(
-                    'error',
-                    "Ups... Hubo un error al enviar tus datos."
-                );
+                ventanaMostrarMensaje('error', "Ups... Hubo un error al enviar tus datos.");
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            //Esto lo puedes cambiar Chango
-            ventanaMostrarMensaje(
-                'error',
-                "Ups... Hubo un erro al enviar tus datos."
-            );
+            ventanaMostrarMensaje('error', "Ups... Hubo un error al enviar tus datos.");
         });
-});
+    });
 
+    const btn = document.querySelector('#guardar_portada');
+    const formulario = document.querySelector('#formulario');
+    const url = document.getElementById('url').value;
+    const landingPageId = document.getElementById('landingPageId').value;
 
-const btn = document.querySelector('#guardar_portada');
-const formulario = document.querySelector('#form_editLan');
-const url = $('#url').val();
-const landingPageId = $('#landingPageId').val();
+    btn.addEventListener("click", function (event) {
+        event.preventDefault();
 
-btn.addEventListener("click", function (event) {
-    event.preventDefault();
+        const formData = new FormData(formulario);
+        const valores = obtenerValoresFormulario(formData);
 
+        if (!verificarVacios(...valores)) {
+            ventanaMostrarMensaje('error', "Por favor, completa todos los campos del formulario.");
+            return;
+        }
 
-    // Recolecta los datos del formulario
-    const formData = new FormData(formulario);
-    //Obtenemos los datos
-    const valores = obtenerValoresFormulario(formData);
-
-    //Si algun valor esta vacio
-    if (!verificarVacios(...valores)) {
-        ventanaMostrarMensaje(
-            'error',
-            "Por favor, completa todos los campos del formulario."
-        );
-        return;
-    } else {
-        console.log('');
-
-        // Envía los datos al backend
         fetch(url + '/actualizar/landing/' + landingPageId, {
             method: 'POST',
             mode: 'cors',
             redirect: 'manual',
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: formData
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al enviar los datos al servidor.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data) {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al enviar los datos al servidor.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                ventanaFormulario('formulario');
+                ventanaMostrarMensaje('exito', "Evento actualizado con éxito");
 
-                    //Cierra el formulario (lo oculta)
-                    ventanaFormulario('formulario');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                ventanaMostrarMensaje('error', "Ups... Hubo un error al enviar los datos.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            ventanaMostrarMensaje('error', "Ups... Hubo un error al enviar los datos.");
+        });
+    });
 
-                    ventanaMostrarMensaje(
-                        'exito',
-                        "Evento actualizado con éxito"
-                    );
-                    // Retrasar la recarga de la página durante 2 segundos
-                    setTimeout(() => {
-                        window.location.reload(); // Recargar la página después de 2 segundos
-                    }, 2000);
-                } else {
-                    ventanaMostrarMensaje(
-                        'error',
-                        "Ups... Hubo un error al enviar los datos."
-                    );
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                //Esto lo puedes cambiar Chango
-                ventanaMostrarMensaje(
-                    'error',
-                    "Ups... Hubo un error al enviar los datos."
-                );
-            });
-    }
+    // Inicializar Swiper
+    let swiper = new Swiper('.swiper-container', {
+        slidesPerView: 'auto',
+        spaceBetween: 1000,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
 });

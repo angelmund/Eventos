@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $empresa
  * @property int $estado
  * @property int $id_evento
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property LandingPage $landing_page
  *
@@ -26,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
 class InscripcionesEvento extends Model
 {
 	protected $table = 'inscripciones_evento';
-	public $timestamps = false;
 
 	protected $casts = [
 		'estado' => 'int',

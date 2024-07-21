@@ -20,7 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $imgPortada_logo
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $idUsuario
+ * @property int $estado
  * 
+ * @property User|null $user
  * @property Collection|InscripcionesEvento[] $inscripciones_eventos
  *
  * @package App\Models
@@ -29,12 +32,24 @@ class LandingPage extends Model
 {
 	protected $table = 'landing_pages';
 
+	protected $casts = [
+		'idUsuario' => 'int',
+		'estado' => 'int'
+	];
+
 	protected $fillable = [
 		'title',
 		'content',
 		'img_logo',
-		'imgPortada_logo'
+		'imgPortada_logo',
+		'idUsuario',
+		'estado'
 	];
+
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'idUsuario');
+	}
 
 	public function inscripciones_eventos()
 	{

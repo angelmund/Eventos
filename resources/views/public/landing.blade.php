@@ -92,9 +92,8 @@
 		}
 	</style>
 	
-	
+	@vite([ 'resources/js/app.js'])
 
-	@vite(['resources/js/app.js'])
 	<!-- Estilos leading -->
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
@@ -286,6 +285,14 @@
 		
 	</script>
 
+	{{--  <script src="{{asset('assets/js/alertas.js')}}"></script>
+	<script src="{{asset('assets/js/cargarEstilosLading.js')}}"></script>
+	<script src="{{asset('assets/js/editarLanding.js')}}"></script>
+	<script src="{{asset('assets/js/EventoE.js')}}"></script>
+	<script src="{{asset('assets/js/formularioRegistro.js')}}"></script>
+	<script src="{{asset('assets/js/funcionesVentana.js')}}"></script>
+	<script src="{{asset('assets/js/scriptEditorLading.js')}}"></script>
+	<script src="{{asset('assets/js/scriptEditorLadingVisdualizarEstilos.js')}}"></script>  --}}
 </body>
 
 </html>

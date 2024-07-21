@@ -39,10 +39,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/eventos/public/storage',
             'visibility' => 'public',
         ],
-        
+
 
         's3' => [
             'driver' => 's3',
@@ -58,7 +58,7 @@ return [
         'img' => [
             'driver' => 'local',
             'root' => storage_path('app/img'),
-            'url' => env('APP_URL').'/fotos-de-eventos/',
+            'url' => env('APP_URL') . '/fotos-de-eventos/',
             'visibility' => 'public',
         ],
 

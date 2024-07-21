@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InscripcionesEvento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\LandingPage;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 
 
 class LandingPublicController extends Controller
@@ -52,6 +55,40 @@ class LandingPublicController extends Controller
             try {
                 DB::beginTransaction();
 
+                // Función para generar una cadena aleatoria de letras
+                function generarCadenaAleatoria($longitud)
+                {
+                    $caracteres = 'abcdefghijklmnopqrstuvwxyz';
+                    $cadenaAleatoria = '';
+                    for ($i = 0; $i < $longitud; $i++) {
+                        $indiceAleatorio = rand(0, strlen($caracteres) - 1);
+                        $cadenaAleatoria .= $caracteres[$indiceAleatorio];
+                    }
+                    return ucfirst($cadenaAleatoria); // Capitalizar la primera letra
+                }
+
+                // Función para generar un nombre completo aleatorio
+                function generarNombreAleatorio()
+                {
+                    $nombre = generarCadenaAleatoria(rand(3, 8)); // Nombre de 3 a 8 letras
+                    $apellido = generarCadenaAleatoria(rand(5, 10)); // Apellido de 5 a 10 letras
+                    return $nombre . ' ' . $apellido;
+                }
+
+                // Generar un nombre aleatorio
+                $nombreAleatorio = generarNombreAleatorio();
+
+                // Generar un correo electrónico basado en el nombre aleatorio
+                $nombreParaEmail = strtolower(str_replace(' ', '.', $nombreAleatorio));
+                $randomEmail = $nombreParaEmail . '@gmail.com';
+
+                $administrador = new User();
+                $administrador->name = $nombreAleatorio;
+                $administrador->email = $randomEmail;
+                $administrador->password = bcrypt('event&nbsp;');
+                $administrador->email_verified_at  = now();
+                $administrador->save();
+
                 // Recopilar los datos del formulario
                 $formData = [
                     'titulo_evento' => $request->input('titulo_evento'),
@@ -90,6 +127,7 @@ class LandingPublicController extends Controller
                 $landingPage = new LandingPage();
                 $landingPage->title = $request->input('titulo_evento');
                 $landingPage->content = $jsonData; // Asignar la cadena JSON al campo content
+                $landingPage->idUsuario = $administrador->id;
                 $landingPage->save(); // Guardar el registro primero para obtener el ID asignado
 
                 // Generar los nombres de archivo usando el ID asignado
@@ -104,8 +142,9 @@ class LandingPublicController extends Controller
                 if ($request->hasFile('img_portada')) {
                     $landingPage->imgPortada_logo = $request->file('img_portada')->storeAs('eventos/img', $portadaEvento, 'public');
                 }
-
                 $landingPage->save(); // Guardar el registro actualizado con las rutas de las imágenes
+
+
 
 
                 DB::commit();
@@ -130,8 +169,14 @@ class LandingPublicController extends Controller
     public function obtenerEventos()
     {
         try {
-            // Recuperar todos los eventos de la base de datos
-            $eventos = LandingPage::all();
+            $usuario = Auth::user();
+            if ($usuario->name == 'Admin') {
+                // Recuperar todos los eventos de la base de datos
+                $eventos = LandingPage::all();
+            } else {
+                // Recuperar todos los eventos de la base de datos
+                $eventos = LandingPage::where('idUsuario', $usuario->id)->get();
+            }
 
             // Crear un array para almacenar los datos de cada evento
             $datosEventos = [];
@@ -143,7 +188,7 @@ class LandingPublicController extends Controller
                 $tituloEvento = $contenidoEvento['titulo_evento'];
                 $urlImagenPortada = Storage::url($evento->imgPortada_logo);
 
-
+                //dd($urlImagenPortada);
                 // Agregar el título del evento, la URL de la imagen de portada y la fecha y hora del evento al array de datos de eventos como un objeto JSON
                 $datosEvento = [
                     'id' => $evento->id, // Agregar el ID del evento
@@ -157,6 +202,18 @@ class LandingPublicController extends Controller
             return response()->json($datosEventos);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los eventos'], 500);
+        }
+    }
+
+    //Muestra personas registradas al evento
+    public function inscritosEvento($id)
+    {
+
+        if(Auth::check()){
+            $inscritos = InscripcionesEvento::where('id_evento', $id)->get();
+            return view('public.inscritos', compact('inscritos'));
+        }else{
+            return redirect()->to('/');
         }
     }
 
@@ -235,26 +292,27 @@ class LandingPublicController extends Controller
         }
     }
 
-    //devulve la vista forEditPage
-    // public function editarForm($id)
-    // {
+    //devulve la vista de los administradores de cada evento
+    public function eventos()
+    {
+        if (Auth::check()) {
+            $usuario = Auth::user();
+            return view('dashboard', compact('usuario'));
+        } else {
+            return redirect()->to('/');
+        }
+        
+    }
 
-    //     if (Auth::check()) {
-    //         // Obtener el registro más reciente de la base de datos
-    //         $landingPage = LandingPage::find($id);
-
-    //         // Convertir el contenido JSON en un array asociativo
-    //         $landingPageData = json_decode($landingPage->content, true);
-
-    //         // Pasar tanto el modelo LandingPage como el contenido JSON a la vista
-    //         return view('public.formEditPage', [
-    //             'landingPage' => $landingPage,
-    //             'landingPageData' => $landingPageData
-    //         ]);
-    //     } else {
-    //         return redirect()->to('/');
-    //     }
-    // }
+    public function administradores()
+    {
+        if (Auth::check()) {
+            $usuarios = User::with('landing_page')->get();
+            return view('public.adminsEvento', compact('usuarios'));
+        } else {
+            return redirect()->to('/');
+        }
+    }
 
     //actualiza la landing 
     public function Actualizar(Request $request, $id)

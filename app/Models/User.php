@@ -6,14 +6,34 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as AuthenticatableUser;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends AuthenticatableUser implements Authenticatable
+/**
+ * Class User
+ * 
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property int|null $id_evento
+ * 
+ * @property LandingPage|null $landing_page
+ * @property Collection|LandingPage[] $landing_pages
+ *
+ * @package App\Models
+ */
+class User extends Authenticatable
 {
-	use HasFactory, Notifiable;
+	
+	use Notifiable;
 	protected $table = 'users';
 
 	protected $casts = [
@@ -32,4 +52,9 @@ class User extends AuthenticatableUser implements Authenticatable
 		'password',
 		'remember_token'
 	];
+
+	public function landing_page()
+    {
+        return $this->hasOne(LandingPage::class, 'idUsuario');
+    }
 }

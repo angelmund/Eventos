@@ -24,7 +24,7 @@ if ($('.seccion-evento').length > 0) {
 
                 // Asignar el ID del evento como un atributo de datos al contenedor del evento
                 cardEvento.dataset.eventoId = evento.id;
-                console.log(cardEvento);
+                //console.log(cardEvento);
 
                 // Crear la imagen de portada del evento
                 const imagenPortada = document.createElement('img');
@@ -134,7 +134,7 @@ if ($('.seccion-evento').length > 0) {
         //     enviarSolicitudDelete(url); // Llamar a la función que envía la solicitud DELETE
         // });
         eliminar("¿Seguro que quiere eliminar el evento?", function () {
-            console.log(id);
+            //console.log(id);
             enviarSolicitudDelete(ur); // Llamar a la función que envía la solicitud DELETE
         });
     }

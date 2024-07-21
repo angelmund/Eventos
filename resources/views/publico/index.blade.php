@@ -23,6 +23,7 @@
 	<link rel="stylesheet" href="{{asset('js/funcionesVentana.js')}}">
 	<link rel="stylesheet" href="{{asset('js/scriptEditorLading.js')}}">
 	<link rel="stylesheet" href="{{asset('js/scriptEditorLadingVisdualizarEstilos.js')}}"> --}}
+	//@vite([ 'resources/js/app.js'])
 	<style>
 		.titulo__texto {
 			color: {{ $landingPageData['color_titulo'] }};
@@ -98,7 +99,6 @@
 	
 	
 
-	@vite(['resources/js/app.js'])
 	<!-- Estilos leading -->
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
@@ -130,12 +130,12 @@
 
 		<ul class="header__redes flex">
 			<li class="redes__item">
-				<a class="redes__link whatsapp" href="">
+				<a href="{{$landingPageData['url_whatsapp']}}" class="redes__link whatsapp" target="_blank">
 					<i class="fab fa-whatsapp"></i>
 				</a>
 			</li>
 			<li class="redes__item">
-				<a class="redes__link facebook">
+				<a href="{{$landingPageData['url_facebook']}}" class="redes__link facebook" target="_blank">
 					<i class="fab fa-facebook"></i>
 				</a>
 			</li>
@@ -264,9 +264,9 @@
 
 	</footer>
 
-	{{-- <script type="text/javascript" src="js/funcionesVentana.js"></script>
+	<script type="text/javascript" src="js/funcionesVentana.js"></script>
 	<script type="text/javascript" src="js/scriptEditorLadingVisdualizarEstilos.js"></script>
-	<script type="text/javascript" src="js/formularioRegistro.js"></script> --}}
+	<script type="text/javascript" src="js/formularioRegistro.js"></script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			// Obtener el valor de eventoPaso desde PHP
